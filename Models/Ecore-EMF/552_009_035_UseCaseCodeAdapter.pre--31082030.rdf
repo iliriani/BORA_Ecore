@@ -1,0 +1,33 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/TR/html4/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:j.0="http://acandonorway.github.com/XmlToRdf/ontology.ttl#">
+  <BusinessObject>
+    <Version></Version>
+    <Model_Name>552_009_035_UseCaseCodeAdapter.pre--31082030</Model_Name>
+    <Model_Description></Model_Description>
+    <Model_Creator></Model_Creator>
+    <DateCreated>06/12/2021</DateCreated>
+    <Comments></Comments>
+    <j.0:hasChild>	
+<Classes>     
+     <j.0:hasChild>  
+	<Class>
+            <Stereotype>Class</Stereotype>
+            <j.0:hasChild>
+            <Attributes>
+	
+	
+</Attributes>	
+ </j.0:hasChild>	
+	
+	
+  <j.0:hasChild>
+  <Associations>
+	
+	
+</Associations>	
+    </j.0:hasChild>
+  </BusinessObject>
+</rdf:RDF>
