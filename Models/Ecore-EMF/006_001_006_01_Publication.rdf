@@ -1,0 +1,156 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/TR/html4/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:j.0="http://acandonorway.github.com/XmlToRdf/ontology.ttl#">
+  <BusinessObject>
+    <Version></Version>
+    <Model_Name>006_001_006_01_Publication</Model_Name>
+    <Model_Description></Model_Description>
+    <Model_Creator></Model_Creator>
+    <DateCreated>06/12/2021</DateCreated>
+    <Comments></Comments>
+    <j.0:hasChild>	
+<Classes>     
+     <j.0:hasChild>  
+	<Class>
+            <Stereotype>Class</Stereotype>
+            <j.0:hasChild>
+            <Attributes>
+	
+    <j.0:hasChild>
+                  <Attribute>
+                    <DataType> String</DataType>
+                    <Setter></Setter>
+                    <CustomValidation></CustomValidation>
+                    <MinLength>0</MinLength>
+                    <Length>100</Length>
+                    <Description></Description>
+                    <IsRequired>false</IsRequired>
+                    <ReadOnly>false</ReadOnly>
+                    <IsEmail>false</IsEmail>
+                    <MaxLength>100</MaxLength>
+                    <Getter></Getter>
+                    <Persisted>true</Persisted>
+                    <Scale>2</Scale>
+                    <BaseInfo></BaseInfo>
+                    <IsStatic>false</IsStatic>
+                    <IsURL>false</IsURL>
+                    <MaxValue></MaxValue>
+                    <Name>title</Name>
+                    <IsEncrypted>false</IsEncrypted>
+                    <Precision>8</Precision>
+                    <IsExternal>false</IsExternal>
+                    <IsInherited>false</IsInherited>
+                    <MinValue></MinValue>
+                    <InitValue></InitValue>
+                    <ColumnName></ColumnName>
+                    <IsValueClass>false</IsValueClass>
+                    <IsCreditCard>false</IsCreditCard>
+                  </Attribute>
+                </j.0:hasChild>
+
+    <j.0:hasChild>
+                  <Attribute>
+                    <DataType> String</DataType>
+                    <Setter></Setter>
+                    <CustomValidation></CustomValidation>
+                    <MinLength>0</MinLength>
+                    <Length>100</Length>
+                    <Description></Description>
+                    <IsRequired>false</IsRequired>
+                    <ReadOnly>false</ReadOnly>
+                    <IsEmail>false</IsEmail>
+                    <MaxLength>100</MaxLength>
+                    <Getter></Getter>
+                    <Persisted>true</Persisted>
+                    <Scale>2</Scale>
+                    <BaseInfo></BaseInfo>
+                    <IsStatic>false</IsStatic>
+                    <IsURL>false</IsURL>
+                    <MaxValue></MaxValue>
+                    <Name>authors</Name>
+                    <IsEncrypted>false</IsEncrypted>
+                    <Precision>8</Precision>
+                    <IsExternal>false</IsExternal>
+                    <IsInherited>false</IsInherited>
+                    <MinValue></MinValue>
+                    <InitValue></InitValue>
+                    <ColumnName></ColumnName>
+                    <IsValueClass>false</IsValueClass>
+                    <IsCreditCard>false</IsCreditCard>
+                  </Attribute>
+                </j.0:hasChild>
+
+    <j.0:hasChild>
+                  <Attribute>
+                    <DataType> Integer</DataType>
+                    <Setter></Setter>
+                    <CustomValidation></CustomValidation>
+                    <MinLength>0</MinLength>
+                    <Length>100</Length>
+                    <Description></Description>
+                    <IsRequired>false</IsRequired>
+                    <ReadOnly>false</ReadOnly>
+                    <IsEmail>false</IsEmail>
+                    <MaxLength>100</MaxLength>
+                    <Getter></Getter>
+                    <Persisted>true</Persisted>
+                    <Scale>2</Scale>
+                    <BaseInfo></BaseInfo>
+                    <IsStatic>false</IsStatic>
+                    <IsURL>false</IsURL>
+                    <MaxValue></MaxValue>
+                    <Name>nbPages</Name>
+                    <IsEncrypted>false</IsEncrypted>
+                    <Precision>8</Precision>
+                    <IsExternal>false</IsExternal>
+                    <IsInherited>false</IsInherited>
+                    <MinValue></MinValue>
+                    <InitValue></InitValue>
+                    <ColumnName></ColumnName>
+                    <IsValueClass>false</IsValueClass>
+                    <IsCreditCard>false</IsCreditCard>
+                  </Attribute>
+                </j.0:hasChild>
+
+	
+</Attributes>	
+ </j.0:hasChild>	
+	
+      <BaseModel></BaseModel>
+            <ModelName>Publication</ModelName>
+            <IsStatic>false</IsStatic>
+            <TableName></TableName>
+            <Name>Publication</Name>
+            <ConcurencyControl>true</ConcurencyControl>
+            <Description></Description>
+            <ShadowModel></ShadowModel>
+            <IsPersisted>true</IsPersisted>
+            <ShadowClass></ShadowClass>
+            <PK>Id</PK>
+            <BaseClasses></BaseClasses>
+            <BaseClass></BaseClass>
+            <IdGeneratorType>HiLoGenerator</IdGeneratorType>
+            <j.0:hasChild>
+              <DiagramInfo>
+                <Width>180</Width>
+                <Top>1</Top>
+                <Left>303</Left>
+                <IsExpanded>true</IsExpanded>
+                <Height>190</Height>
+              </DiagramInfo>
+            </j.0:hasChild>
+            <AutoAssignPrimaryKey>true</AutoAssignPrimaryKey>
+          </Class>
+        </j.0:hasChild>
+      </Classes>
+     </j.0:hasChild>	
+  <j.0:hasChild>
+  <Associations>
+	
+	
+</Associations>	
+    </j.0:hasChild>
+  </BusinessObject>
+</rdf:RDF>
