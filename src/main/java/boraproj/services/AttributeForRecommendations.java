@@ -25,13 +25,14 @@ public class AttributeForRecommendations {
 	
 
 	
-	public void getClassesWithSameAttributes(ArrayList<String> attr) {
+	public ArrayList<String> getClassesWithSameAttributes(ArrayList<String> attr) {
 		
 		ArrayList<String> classes = new ArrayList<>(stored.getClassFromAttributes(attr));
 		
 		ArrayList<String> related_classes = new ArrayList<>();
 		
 		for(String c: classes) {
+//			ArrayList<String> related_classes = new ArrayList<>();
 			related_classes.addAll(ngrams.oneGram(c));
 		}
 		
@@ -47,6 +48,8 @@ public class AttributeForRecommendations {
 		
 		System.out.println("recommendations are: "+related_classes_non_duplicates);
 		System.out.println("Total: "+related_classes_non_duplicates.size());
+		
+		return related_classes_non_duplicates;
 		
 	}
 }
