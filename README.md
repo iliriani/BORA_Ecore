@@ -26,7 +26,8 @@ Choose either to:
 REST API Execution: Trigger endpoints such as:
 localhost:8080/classRecommendationsFromAttributes?class_attrs=ClassName
 localhost:8080/attributes?cl=ClassName
-Java Project Execution: Run BoraMain.main() to directly execute required operations.
+Java Project Execution: Run BoraMain.main() to directly execute the required operations.
 This structured workflow supports effective RDF graph management and leverages BORA's analytical functions. For more details, please refer to the source code in this repository.
 
+Also, find below a video of how BORA does work within the zAppDev Low-code:
 https://www.youtube.com/watch?v=Hid5RsviKBU
