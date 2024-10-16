@@ -20,7 +20,7 @@ repoPath: Path for TDB storage
 ## 3.Adding Weights
 Using AddWeights.insertAllWeights(), weights are assigned to graph edges, enhancing the graph’s analytical utility.
 
-## 4.Executing BORA Endpoints
+## 4. Executing BORA Endpoints
 Choose either to:
 
 REST API Execution: Trigger endpoints such as:
@@ -28,3 +28,5 @@ localhost:8080/classRecommendationsFromAttributes?class_attrs=ClassName
 localhost:8080/attributes?cl=ClassName
 Java Project Execution: Run BoraMain.main() to directly execute required operations.
 This structured workflow supports effective RDF graph management and leverages BORA's analytical functions. For more details, please refer to the source code in this repository.
+
+https://www.youtube.com/watch?v=Hid5RsviKBU
