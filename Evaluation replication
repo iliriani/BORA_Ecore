@@ -1,5 +1,6 @@
 This repository provides a workflow for processing models, merging them, and evaluating class and attribute similarity using RDF and cross-validation methods.
 
+# Evaluation Process
 ## 1. Convert models to RDF
 Use Classes like Json2RDf, XML2Rdf to convert different models to the specific RDF format.
 
@@ -14,11 +15,11 @@ Use Classes like Json2RDf, XML2Rdf to convert different models to the specific R
 ## 3. Create Repo by using an initial model and the destination
 """"
 		  String repoTest = "path_to_repo";
-		  String repoTrain = "C:\\Users\\Ibrahimi\\Desktop\\10-fold evaluation ZappDev models\\1\\train\\repository";
-////		  
+		  String repoTrain = "path_to_repo";
+		  
 		  EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
 
-		  comp.createRepo("C:\\Users\\Ibrahimi\\Desktop\\10-fold evaluation ZappDev models\\1\\test\\AccessComponent.bo (2).rdf",repoTest);
+		  comp.createRepo("path_to_repo\\AccessComponent.bo (2).rdf",repoTest);
 """"
 
 
