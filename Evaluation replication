@@ -1,0 +1,16 @@
+# Model Processing and Evaluation Workflow
+
+This project provides a workflow for processing models, merging them, and evaluating class and attribute similarity using RDF and cross-validation methods.
+
+## Steps
+
+### 1. Convert Models to RDF
+
+Convert your models into RDF format for compatibility with the subsequent steps.
+
+### 2. Use Cross-Validation for Folder Splitting
+
+Set up folder splitting for cross-validation evaluation:
+```java
+CrossValidationFolderSetup folderSetup = new CrossValidationFolderSetup();
+folderSetup.splitFolders("path/to/data");
