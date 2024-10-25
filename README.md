@@ -1,7 +1,8 @@
 # BORA_Ecore
 ## BORA - a model reuse algorithm based on the RDF graph repository and N-grams
 
-[Activity diagram BORA.pdf](https://github.com/user-attachments/files/17395604/Activity.diagram.BORA.pdf)
+![Activity diagram BORA](https://github.com/user-attachments/assets/4973c6f0-cda5-4c6c-b37d-37f460ea5194)
+
 
 
 # Activity Diagram and Source Code Overview
