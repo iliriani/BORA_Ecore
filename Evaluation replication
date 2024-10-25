@@ -1,16 +1,37 @@
-# Model Processing and Evaluation Workflow
+This repository provides a workflow for processing models, merging them, and evaluating class and attribute similarity using RDF and cross-validation methods.
 
-This project provides a workflow for processing models, merging them, and evaluating class and attribute similarity using RDF and cross-validation methods.
+## 1. Convert models to RDF
 
-## Steps
 
-### 1. Convert Models to RDF
+## 2. Use CrossValidationFolderSetup for spiting folders for evaluation
 
-Convert your models into RDF format for compatibility with the subsequent steps.
+## 2. Merge Models:
 
-### 2. Use Cross-Validation for Folder Splitting
+		RDFMerge m = new RDFMerge();
+		m.iterate();
+		
+		
+## 3. create Repo by using an initial model and the destination
+""""
+		  String repoTest = "C:\\Users\\Ibrahimi\\Desktop\\10-fold evaluation ZappDev models\\1\\test\\repository";
+		  String repoTrain = "C:\\Users\\Ibrahimi\\Desktop\\10-fold evaluation ZappDev models\\1\\train\\repository";
+////		  
+		  EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
 
-Set up folder splitting for cross-validation evaluation:
-```java
-CrossValidationFolderSetup folderSetup = new CrossValidationFolderSetup();
-folderSetup.splitFolders("path/to/data");
+		  comp.createRepo("C:\\Users\\Ibrahimi\\Desktop\\10-fold evaluation ZappDev models\\1\\test\\AccessComponent.bo (2).rdf",repoTest);
+""""
+
+
+
+## 4. Insert Weights:
+			AddWeights w = new AddWeights(repoTrain);
+			w.insertAllWeight();
+		
+		
+## 5. Run the evaluation:
+-For class name similarity evaluation
+
+EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
+com.compare(repoTest, repoTrain)
+-For attribute similarity evaluation
+comp.compareAtttributeAndRelations(repoTest, repoTrain);	
