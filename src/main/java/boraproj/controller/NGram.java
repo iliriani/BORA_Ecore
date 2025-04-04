@@ -379,9 +379,18 @@ public class NGram {
 
 	}
 	
-	public ArrayList<String> getAllClasses(String domain) {
+	@RequestMapping(method=RequestMethod.POST, value="all_domain_classes")
+	public ArrayList<String> getAllDomainClasses(String domain) {
 
-		ArrayList<String> items = stored.getAllClasses(domain);
+		ArrayList<String> items = stored.getAllDomainClasses(domain);
+		return items;
+
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="all_classes")
+	public ArrayList<String> getAllClasses() {
+
+		ArrayList<String> items = stored.getAllClassesFromKG();
 		return items;
 
 	}
