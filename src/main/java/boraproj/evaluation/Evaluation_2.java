@@ -19,7 +19,7 @@ public class Evaluation_2 {
 	public Evaluation_2 ( ArrayList<String> model_under_construction, ArrayList<String> relevant_repo , ArrayList<String> suggestion) {
 		
 		this.model_under_construction = model_under_construction;
-		this.relevant_repo = relevant_repo;
+//		this.relevant_repo = relevant_repo;
 		this.suggestions = suggestion;
 		
 	}

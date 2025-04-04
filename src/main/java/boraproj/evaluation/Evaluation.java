@@ -16,7 +16,7 @@ public class Evaluation {
 	}
 	
 	public double precision(String cl1, String cl2) {
-		all_classes = n_gram.getAllClasses(model); 
+		all_classes = n_gram.getAllDomainClasses(model); 
 		all_classes.remove(cl1);
 		all_classes.remove(cl2);
 //		all_classes.remove(cl3);
@@ -44,7 +44,7 @@ public class Evaluation {
 	}
 	
 	public double recall(String cl1, String cl2) {
-		all_classes = n_gram.getAllClasses(model); 
+		all_classes = n_gram.getAllDomainClasses(model); 
 		all_classes.remove(cl1);
 		all_classes.remove(cl2);
 //		all_classes.remove(cl3);
