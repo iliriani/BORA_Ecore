@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RepoConnect {
-	private String directory = "../BORA_Ecore/src/main/resources/repository";
+	private String directory = "../BORA/src/main/resources/repository";
 	
 //	For linkux path
 //	private String directory = "repository";
@@ -94,7 +94,7 @@ public class RepoConnect {
 	
 	
 	
-	// Getting all classes in the repository	
+	// Getting all connected classes in the repository	
 		public ArrayList getAllClasses() {
 
 			ArrayList<String> items = new ArrayList<String>();
@@ -107,6 +107,44 @@ public class RepoConnect {
 					+ "SELECT  DISTINCT ?classes\r\n"
 					+ "WHERE { ?s ?o  ?p;\r\n"
 					+ "           <Class1> | <Class2> ?classes . } ";
+		
+			Query query = QueryFactory.create(sparqlQueryString);
+			QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//			System.out.println("Query executed!");
+			try {
+				ResultSet results = qexec.execSelect();
+				for (; results.hasNext();) {
+					QuerySolution soln = results.nextSolution();
+					String whole = soln.toString();
+					String core = whole.substring(14, whole.length() - 3);
+					items.add(core);
+
+				}
+
+				d.commit();
+			} finally {
+				qexec.close();
+				// Close the dataset.
+				d.end();
+			}
+
+			return items;
+
+		}
+		
+		
+		// Getting all connected non-distinct classes in the repository	
+		public ArrayList getAllNonDistinctClasses() {
+
+			ArrayList<String> items = new ArrayList<String>();
+			Dataset d = TDBFactory.createDataset(directory);
+			Model model = d.getDefaultModel();
+			d.begin(ReadWrite.READ);
+
+			String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+					+ "base <http://www.w3.org/TR/html4/> \r\n"
+					+ "SELECT  ?classes\r\n"
+					+ "WHERE { ?s <Class1> | <Class2> ?classes . } ";
 		
 			Query query = QueryFactory.create(sparqlQueryString);
 			QueryExecution qexec = QueryExecutionFactory.create(query, d);
@@ -156,7 +194,7 @@ public class RepoConnect {
 				String whole = soln.toString();
 				String core = whole.substring(8, whole.length() - 3);
 				items.add(core);
-				System.out.println(core);
+//				System.out.println(core);
 			}
 
 			d.commit();
@@ -170,6 +208,82 @@ public class RepoConnect {
 
 	}
 	
+	public ArrayList<String> getRelatedClassesForNLP(String cl) {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+		String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+				+ "base <http://www.w3.org/TR/html4/>\r\n"
+				+ "	SELECT DISTINCT ?p\r\n"
+				+ "	WHERE { ?s ?o  ?cl ;\r\n"
+				+ "	 <Class1> | <Class2> ?p . \r\n"
+				+ "FILTER regex(?cl,\""+cl+"\", \"i\").\r\n"
+				+ "}  ";
+		// See http://incubator.apache.org/jena/documentation/query/app_api.html
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println("Query executed!");
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(8, whole.length() - 3);
+				items.add(core);
+//				System.out.println(core);
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
+	
+
+	
+	public ArrayList<String> getTokenMatchedClasses(String cl) {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+		String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+				+ "base <http://www.w3.org/TR/html4/>\r\n"
+				+ "	SELECT DISTINCT ?p\r\n"
+				+ "{ ?s <Class1> | <Class2> ?p \r\n"
+				+ "  FILTER (regex(?p,\""+cl+"\", \"i\")).\r\n"
+				+ "} ";
+		// See http://incubator.apache.org/jena/documentation/query/app_api.html
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println("Query executed!");
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(8, whole.length() - 3);
+				items.add(core);
+//				System.out.println(core);
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
 	
 	
 	
@@ -215,6 +329,47 @@ public class RepoConnect {
 	}
 	
 	
+	public ArrayList<String> getRelatedDomainClassesForNLP(String domain) {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+
+		String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+				+ "base <http://www.w3.org/TR/html4/> \r\n"
+				+ "	SELECT DISTINCT ?classes\r\n"
+				+ "		WHERE {\r\n"
+				+ "			?s  <ModelName> ?domain;\r\n"
+				+ "			<Class1> | <Class2> ?classes.\r\n"
+				+ "		FILTER regex(?domain, \""+domain+"\", \"i\").	\r\n"
+				+ "	} ";
+	
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println("Query executed!");
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(14, whole.length() - 3);
+				items.add(core);
+
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
+	
+	
 	
 	
 	public ArrayList<String> getClasses() {
@@ -225,6 +380,46 @@ public class RepoConnect {
 		Model model = d.getDefaultModel();
 		d.begin(ReadWrite.READ);
 		String sparqlQueryString = "SELECT DISTINCT ?o\r\n"
+				+ "WHERE {\r\n"
+				+ "		?s ?p ?o .\r\n"
+				+ "		?s <http://www.w3.org/TR/html4/Class1> |\r\n"
+				+ "		<http://www.w3.org/TR/html4/Class2> ?o . }";
+		
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println("Query executed!");
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(8, whole.length() - 3);
+				items.add(core);
+//				System.out.println(soln);
+//				int count = soln.getLiteral("count").getInt();
+//				System.out.println("count = " + count);
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
+	
+	
+	public ArrayList<String> getNonDistinctClasses() {
+
+//		this.entity = entity;
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+		String sparqlQueryString = "SELECT ?o\r\n"
 				+ "WHERE {\r\n"
 				+ "		?s ?p ?o .\r\n"
 				+ "		?s <http://www.w3.org/TR/html4/Class1> |\r\n"
@@ -302,14 +497,14 @@ public class RepoConnect {
 	public ArrayList<String> getIslandClasses(String domain) {
 
 		ArrayList<String> items = new ArrayList<String>();
-		items = this.getAllClasses(domain);
+		items = this.getAllDomainClasses(domain);
 		ArrayList<String> related_classes = this.getRelatedClasses(domain);
 		items.removeAll(related_classes);
 		return items;
 
 	}
 	
-	public ArrayList<String> getAllClasses(String domain) {
+	public ArrayList<String> getAllDomainClasses(String domain) {
 
 		ArrayList<String> items = new ArrayList<String>();
 		Dataset d = TDBFactory.createDataset(directory);
@@ -321,6 +516,84 @@ public class RepoConnect {
 				+ "WHERE {\r\n"
 				+ "  		 ?s  <ModelName> \""+domain+"\";\r\n"
 				+ "       		 <Name> ?classes.\r\n"
+				+ "}";
+	
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(14, whole.length() - 3);
+				items.add(core);
+
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
+	
+	
+//	Returns all classes from the KG (Including the islandes)
+	public ArrayList<String> getAllClassesFromKG() {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+
+		String sparqlQueryString = "prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> base <http://www.w3.org/TR/html4/> \r\n"
+				+ "SELECT DISTINCT ?classes\r\n"
+				+ "WHERE {\r\n"
+				+ "  		 ?s <Name> ?classes.\r\n"
+//				+ "  		 ?s <Class> ?classes.\r\n"
+				+ "}";
+	
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(14, whole.length() - 3);
+				items.add(core);
+
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return items;
+
+	}
+	
+	
+//	Returns all classes from the KG (Including the islandes)
+	public ArrayList<String> getAllNonDistClassesFromKG() {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+
+		String sparqlQueryString = "prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> base <http://www.w3.org/TR/html4/> \r\n"
+				+ "SELECT  ?classes\r\n"
+				+ "WHERE {\r\n"
+				+ "  		 ?s <Name> ?classes.\r\n"
+//				+ "  		 ?s <Class> ?classes.\r\n"
 				+ "}";
 	
 		Query query = QueryFactory.create(sparqlQueryString);
@@ -411,6 +684,113 @@ public class RepoConnect {
 	
 	
 	
+	public ArrayList<String> getClassFromAttributes(List<String> attr) {
+		
+
+		ArrayList<String> attributes = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+		String atr = "";
+		if(attr.size() == 1) { atr += " regex(?atr,\""+attr.get(0)+"\", \"i\") ";}
+		else {
+		for(int i=0; i<attr.size()-1;i++) {
+//			atr += "?atr = \""+attr.get(i)+"\" || ";
+			atr += " regex(?atr,\""+attr.get(i)+"\", \"i\")  || ";
+		}
+//		atr += "?atr = \""+attr.get(attr.size()-1)+"\"";
+		atr += " regex(?atr,\""+attr.get(attr.size()-1)+"\", \"i\") ";
+		}
+
+		String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+				+ "base <http://www.w3.org/TR/html4/>\r\n"
+				+ "SELECT DISTINCT ?cl\r\n"
+				+ "{\r\n"
+				+ "	?s <Name> ?cl;\r\n"
+				+ "    :hasChild/:hasChild/<Name> ?atr\r\n"
+				+ "  	FILTER ( "+atr+" ).\r\n"
+				+ "                         \r\n"
+				+ "} LIMIT 10 ";
+
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println(sparqlQueryString);
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(9, whole.length() - 3);
+				attributes.add(core);
+//				System.out.println(core);
+
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return attributes;
+		
+	}
+	
+	public ArrayList<String> getClassFromANDAttributes(List<String> attr) {
+		
+
+		ArrayList<String> attributes = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.READ);
+		String atr = "";
+		if(attr.size() == 1) { atr += " regex(?atr,\""+attr.get(0)+"\", \"i\") ";}
+		else {
+		for(int i=0; i<attr.size()-1;i++) {
+//			atr += "?atr = \""+attr.get(i)+"\" || ";
+			atr += " regex(?atr,\""+attr.get(i)+"\", \"i\")  && ";
+		}
+//		atr += "?atr = \""+attr.get(attr.size()-1)+"\"";
+		atr += " regex(?atr,\""+attr.get(attr.size()-1)+"\", \"i\") ";
+		}
+
+		String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+				+ "base <http://www.w3.org/TR/html4/>\r\n"
+				+ "SELECT DISTINCT ?cl\r\n"
+				+ "{\r\n"
+				+ "	?s <Name> ?cl;\r\n"
+				+ "    :hasChild/:hasChild/<Name> ?atr\r\n"
+				+ "  	FILTER ( "+atr+" ).\r\n"
+				+ "                         \r\n"
+				+ "} LIMIT 10 ";
+
+		Query query = QueryFactory.create(sparqlQueryString);
+		QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//		System.out.println(sparqlQueryString);
+		try {
+			ResultSet results = qexec.execSelect();
+			for (; results.hasNext();) {
+				QuerySolution soln = results.nextSolution();
+				String whole = soln.toString();
+				String core = whole.substring(9, whole.length() - 3);
+				attributes.add(core);
+//				System.out.println(core);
+
+			}
+
+			d.commit();
+		} finally {
+			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
+		return attributes;
+		
+	}
+	
+	
 	public ArrayList<String> getAllDomainAttributes(String domain) {
 		
 
@@ -490,6 +870,40 @@ public class RepoConnect {
 
 		return items;
 	
+	}
+	
+	
+	
+	public void deleteRepo() {
+
+		ArrayList<String> items = new ArrayList<String>();
+		Dataset d = TDBFactory.createDataset(directory);
+		Model model = d.getDefaultModel();
+		d.begin(ReadWrite.WRITE);
+		  
+		  // ... perform a SPARQL Update 
+		GraphStore graphStore = GraphStoreFactory.create(d) ; 
+		String sparqlUpdateString = StrUtils.strjoinNL(
+		  " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n" +
+		  "base <http://www.w3.org/TR/html4/> \r\n" 
+				  + " CLEAR ALL " ) ;
+		  
+		  UpdateRequest request = UpdateFactory.create(sparqlUpdateString) ;
+		  UpdateProcessor proc = UpdateExecutionFactory.create(request, graphStore) ;
+		  proc.execute() ;
+		 
+		
+		
+		try {
+			d.commit();
+			System.out.println("Deleted!");
+
+		} finally {
+//			qexec.close();
+			// Close the dataset.
+			d.end();
+		}
+
 	}
 	
 	
@@ -736,6 +1150,56 @@ public class RepoConnect {
 
 		}
 	
+		
+//		Get the multiplicity of all connections for a given class
+		public ArrayList<String> getConnectionMultiplicity(String cl) {
+			
+//			String[] multiplicity = new String[2];
+			ArrayList<String> multiplicity = new ArrayList<String>();
+			ArrayList<String> items = new ArrayList<String>();
+			Dataset d = TDBFactory.createDataset(directory);
+			Model model = d.getDefaultModel();
+			d.begin(ReadWrite.READ);
+
+			String sparqlQueryString = "prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+					+ "base <http://www.w3.org/TR/html4/>\r\n"
+					+ "SELECT DISTINCT ?multiplicity1 ?multiplicity2\r\n"
+					+ "{\r\n"
+					+ "	?s <Class1> | <Class2> \""+cl+"\";\r\n"
+					+ "                  <Multiplicity1> ?multiplicity1;\r\n"
+					+ "                  <Multiplicity2> ?multiplicity2.\r\n"
+					+ "}";
+		
+			Query query = QueryFactory.create(sparqlQueryString);
+			QueryExecution qexec = QueryExecutionFactory.create(query, d);
+			try {
+				ResultSet results = qexec.execSelect();
+				for (; results.hasNext();) {
+					QuerySolution soln = results.nextSolution();
+					RDFNode node1 = soln.get("multiplicity1");
+					RDFNode node2 = soln.get("multiplicity2");
+				    String multi1 = node1.asLiteral().getString();
+				    String multi2 = node2.asLiteral().getString();
+				    
+				    String m = multi1 + " - " +multi2;
+				    multiplicity.add(m);
+//				    System.out.println("Multi1 is: "+multi1+"  "+multi2);
+
+
+				}
+
+				d.commit();
+			} finally {
+				qexec.close();
+				// Close the dataset.
+				d.end();
+			}
+
+			return multiplicity;
+
+		}
+		
+		
 	
 //	Get the multiplicity of the connection between cl1 and cl2
 	public String[] getConnectionMultiplicity(String cl1, String cl2) {
@@ -878,7 +1342,7 @@ public String[] getConnectionRoleNames(String cl1, String cl2) {
 	}
 
 
-//Get the name of the model whom the class belongs to
+//Get the name of the model
 public ArrayList<String> getModelName(String cl) {
 
 	ArrayList<String> items = new ArrayList<String>();
@@ -886,12 +1350,75 @@ public ArrayList<String> getModelName(String cl) {
 	Model model = d.getDefaultModel();
 	d.begin(ReadWrite.READ);
 
-	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> base <http://www.w3.org/TR/html4/> \r\n"
-			+ "SELECT DISTINCT ?model \r\n"
-			+ "WHERE {   ?x <ModelName> ?model ;  \r\n"
-			+ "       		<Class1> | <Class2> \""+cl+"\" . }\r\n"
-			+ "ORDER BY ASC(?model) ";
+//	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> base <http://www.w3.org/TR/html4/> \r\n"
+//			+ "SELECT DISTINCT ?model \r\n"
+//			+ "WHERE {   ?x <ModelName> ?model ;  \r\n"
+//			+ "       		<Class1> | <Class2> \""+cl+"\" . }\r\n"
+//			+ "ORDER BY ASC(?model) ";
+	
+//	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+//			+ "base <http://www.w3.org/TR/html4/>\r\n"
+//			+ "	SELECT DISTINCT ?model\r\n"
+//			+ "WHERE { ?s <ModelName> ?model;\r\n"
+//			+ "           	<Class1> | <Class2> ?cl\r\n"
+//			+ "  FILTER (regex(?cl,\""+cl+"\", \"i\")).\r\n"
+//			+ "}  ";	
+	
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "	SELECT DISTINCT ?cl\r\n"
+			+ "WHERE { ?s <ModelName> ?cl;\r\n"
+			+ "  FILTER (regex(?cl,\""+cl+"\", \"i\")).\r\n"
+			+ "}  ";	
 
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+//			String core = whole.substring(12, whole.length() - 3);
+			String core = whole.substring(9, whole.length() - 3);
+			items.add(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return items;
+
+}
+
+
+
+//Get the name of the model whom the class belongs to
+public ArrayList<String> getModelNameForGivenClass(String cl) {
+
+	ArrayList<String> items = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+
+//	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> base <http://www.w3.org/TR/html4/> \r\n"
+//			+ "SELECT DISTINCT ?model \r\n"
+//			+ "WHERE {   ?x <ModelName> ?model ;  \r\n"
+//			+ "       		<Class1> | <Class2> \""+cl+"\" . }\r\n"
+//			+ "ORDER BY ASC(?model) ";
+	
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "	SELECT DISTINCT ?model\r\n"
+			+ "WHERE { ?s <ModelName> ?model;\r\n"
+			+ "           	<Class1> | <Class2> ?cl\r\n"
+			+ "  FILTER (regex(?cl,\""+cl+"\", \"i\")).\r\n"
+			+ "}  ";	
+	
 	Query query = QueryFactory.create(sparqlQueryString);
 	QueryExecution qexec = QueryExecutionFactory.create(query, d);
 	try {
@@ -915,5 +1442,291 @@ public ArrayList<String> getModelName(String cl) {
 
 }
 
+
+//Get all names of the classes had in any connection
+public ArrayList<String> getBaseClasses(String cl) {
+
+	ArrayList<String> items = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+			+ "base <http://www.w3.org/TR/html4/> \r\n"
+			+ "SELECT DISTINCT ?base_classes\r\n"
+			+ "WHERE {\r\n"
+			+ "  		 ?s  <Name> \""+cl+"\";\r\n"
+			+ "       		 <BaseClass> ?base_classes.\r\n"
+			+ "} ";
+
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+			String core = whole.substring(19, whole.length() - 3);
+			if(core.equals("")) {continue;} 
+			else {items.add(core);}
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return items;
+
+}
+
+
+public ArrayList<String> getAllModelNames() {
+
+	ArrayList<String> items = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT DISTINCT ?model_names\r\n"
+			+ "WHERE\r\n"
+			+ "{\r\n"
+			+ "	?s <ModelName> ?model_names.\r\n"
+			+ "} ";
+
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+			String core = whole.substring(18, whole.length() - 3);
+			items.add(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return items;
+
+}
+
+
+public ArrayList<String> getAllNonDistinctModelNames() {
+
+	ArrayList<String> items = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT ?model_names\r\n"
+			+ "WHERE\r\n"
+			+ "{\r\n"
+			+ "	?s <ModelName> ?model_names.\r\n"
+			+ "} ";
+
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+			String core = whole.substring(18, whole.length() - 3);
+			items.add(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return items;
+
+}
+
+
+
+/// For testing the reused class study
+
+
+public ArrayList<String> getAllClasssesAndAttributes() {
 	
+
+	ArrayList<String> attributes = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT distinct ?p {\r\n"
+//			+ "	?s :hasChild/:hasChild/:hasChild/<Name> ?p\r\n"
+			+ "	?s <Name> ?p\r\n"
+			+ "\r\n"
+			+ "} ";
+	
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//	System.out.println("getAttribute excequted!");
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+			String core = whole.substring(8, whole.length() - 3);
+			attributes.add(core);
+//			System.out.println(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return attributes;
+	
+}
+
+
+public ArrayList<String> getAllAttributes() {
+	
+
+	ArrayList<String> attributes = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT distinct ?atr {    	\r\n"
+			+ "		?s <Name> ?cl;\r\n"
+			+ "	   :hasChild/:hasChild/<Name> ?atr\r\n"
+			+ "} ";
+	
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//	System.out.println("getAttribute excequted!");
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+
+			String core = whole.substring(10, whole.length() - 3);
+			attributes.add(core);
+//			System.out.println(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return attributes;
+	
+}
+
+
+
+
+public ArrayList<String> getBONames() {
+
+	ArrayList<String> items = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#> \r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT DISTINCT ?model_names\r\n"
+			+ "WHERE\r\n"
+			+ "{\r\n"
+			+ "	?s <Model_Name> ?model_names.\r\n"
+			+ "} ";
+
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+			String core = whole.substring(18, whole.length() - 3);
+			items.add(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return items;
+
+}
+
+
+public ArrayList<String> getModelNames(String modelName) {
+	
+
+	ArrayList<String> attributes = new ArrayList<String>();
+	Dataset d = TDBFactory.createDataset(directory);
+	Model model = d.getDefaultModel();
+	d.begin(ReadWrite.READ);
+	String sparqlQueryString = " prefix : <http://acandonorway.github.com/XmlToRdf/ontology.ttl#>\r\n"
+			+ "base <http://www.w3.org/TR/html4/>\r\n"
+			+ "SELECT DISTINCT ?model {    	\r\n"
+			+ "		?s <Model_Name> \""+modelName+"\";\r\n"
+			+ "	   	 :hasChild/:hasChild/<ModelName> ?model;\r\n"
+			+ "} ";
+	
+	Query query = QueryFactory.create(sparqlQueryString);
+	QueryExecution qexec = QueryExecutionFactory.create(query, d);
+//	System.out.println("getAttribute excequted!");
+	try {
+		ResultSet results = qexec.execSelect();
+		for (; results.hasNext();) {
+			QuerySolution soln = results.nextSolution();
+			String whole = soln.toString();
+
+			String core = whole.substring(12, whole.length() - 3);
+			attributes.add(core);
+//			System.out.println(core);
+
+		}
+
+		d.commit();
+	} finally {
+		qexec.close();
+		// Close the dataset.
+		d.end();
+	}
+
+	return attributes;
+	
+}
+
 }
