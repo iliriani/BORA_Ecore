@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RepoConnect {
-	private String directory = "../BoraAI/src/main/resources/repository";
+	private String directory = "../BORA_Ecore/src/main/resources/repository";
 	
 //	For linkux path
 //	private String directory = "repository";
