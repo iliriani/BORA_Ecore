@@ -27,11 +27,21 @@ import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 //public class StoretoTDB implements Runnable{
 
 @Service
 public class RepoConnect {
-	private String directory = "../BORA/src/main/resources/repository";
+	// Get the current working directory
+	Path currentRelativePath = Paths.get("");
+	String currentAbsolutePath = currentRelativePath.toAbsolutePath().toString();
+	
+	// Construct the relative path
+	Path relativePath = Paths.get(currentAbsolutePath, "src", "main", "resources", "repository");
+	private String directory = relativePath.toString();
+	// private String directory = "../BORA/src/main/resources/repository";
 	
 //	For linkux path
 //	private String directory = "repository";
