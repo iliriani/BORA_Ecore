@@ -1,38 +1,45 @@
 This repository provides a workflow for processing models, merging them, and evaluating class and attribute similarity using RDF and cross-validation methods.
 
 # Evaluation Process
+
 ## 1. Convert models to RDF
 Use Classes like Json2RDf, XML2Rdf to convert different models to the specific RDF format.
 
-## 2. Use CrossValidationFolderSetup to split folders for evaluation. Currently, 80% of the models are split for training and 20% for testing.
+## 2. Use CrossValidationFolderSetup to split folders for evaluation
+Currently, 80% of the models are split for training and 20% for testing.
 
-## 2. Merge Models:
+## 3. Merge Models:
+```java
+RDFMerge m = new RDFMerge();
+m.iterate();
+```
 
-		RDFMerge m = new RDFMerge();
-		m.iterate();
-		
-		
-## 3. Create Repo by using an initial model and the destination
-""""
-		  String repoTest = "path_to_repo";
-		  String repoTrain = "path_to_repo";
-		  
-		  EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
+## 4. Create Repo by using an initial model and the destination
+```java
+String repoTest = "path_to_repo";
+String repoTrain = "path_to_repo";
 
-		  comp.createRepo("path_to_repo\\AccessComponent.bo (2).rdf",repoTest);
-""""
-
-
-
-## 4. Insert Weights:
-			AddWeights w = new AddWeights(repoTrain);
-			w.insertAllWeight();
-		
-		
-## 5. Run the evaluation:
 EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
--For class name similarity evaluation
-com.compare(repoTest, repoTrain)
+comp.createRepo("path_to_repo\\AccessComponent.bo (2).rdf", repoTest);
+```
 
--For attribute similarity evaluation
-comp.compareAtttributeAndRelations(repoTest, repoTrain);	
+## 5. Insert Weights:
+```java
+AddWeights w = new AddWeights(repoTrain);
+w.insertAllWeight();
+```
+
+## 6. Run the evaluation:
+```java
+EvaluationForKfoldValidation comp = new EvaluationForKfoldValidation(repoTrain);
+```
+
+- **For class name similarity evaluation:**
+  ```java
+  comp.compare(repoTest, repoTrain);
+  ```
+
+- **For attribute similarity evaluation:**
+  ```java
+  comp.compareAtttributeAndRelations(repoTest, repoTrain);
+  ```
