@@ -19,15 +19,15 @@ public class AttributeProcessor {
             ArrayList<String> allAttributes = conn.getAttributes(cl);
 
             // Remove unwanted attributes
-            Iterator<String> iter = allAttributes.iterator();
-            while (iter.hasNext()) {
-                String attr = iter.next();
-                if (attr.equalsIgnoreCase("id") ||
-                        attr.equalsIgnoreCase("name") ||
-                        attr.equalsIgnoreCase("length")) {
-                    iter.remove();
-                }
-            }
+//            Iterator<String> iter = allAttributes.iterator();
+//            while (iter.hasNext()) {
+//                String attr = iter.next();
+//                if (attr.equalsIgnoreCase("id") ||
+//                        attr.equalsIgnoreCase("name") ||
+//                        attr.equalsIgnoreCase("length")) {
+//                    iter.remove();
+//                }
+//            }
 
             // Store attributes for this class
             classAttributes.put(cl, new ArrayList<>(allAttributes));
